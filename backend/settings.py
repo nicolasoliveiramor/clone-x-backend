@@ -64,63 +64,10 @@ TEMPLATES = [
 WSGI_APPLICATION = 'backend.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME', default='clone_x'),
-        'USER': config('DB_USER', default='clone_x'),
-        'PASSWORD': config('DB_PASSWORD', default='Nicolas-157'),
-        'HOST': config('DB_HOST', default='localhost'),
-        'PORT': config('DB_PORT', default='5432'),
-    }
-}
-
-CONN_MAX_AGE = config('DB_CONN_MAX_AGE', default=60, cast=int)
-
-# Ativa SQLite no PythonAnywhere free ao setar PA_USE_SQLITE=true
-if config('PA_USE_SQLITE', default=False, cast=bool):
-    DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
-
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
-
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
-
-
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
-
-LANGUAGE_CODE = 'en-us'
-
-TIME_ZONE = 'UTC'
-
-USE_I18N = True
-
-USE_TZ = True
-
-
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
+# Static files (CSS, JavaScript, Images)
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
@@ -157,7 +104,6 @@ CSRF_TRUSTED_ORIGINS = [
     'http://localhost:5173',
     'http://127.0.0.1:5173',
 ]
-
 PA_HOST = config('PA_HOST', default='')
 if PA_HOST:
     CSRF_TRUSTED_ORIGINS.append(f'https://{PA_HOST}')
@@ -182,3 +128,24 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = False # Mantém sessão ao fechar o browser (a
 
 # Tempo de inatividade para auto-logout (usado pelo middleware)
 IDLE_TIMEOUT_SECONDS = 60 * 60
+
+# Database
+# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': config('DB_NAME', default='clone_x'),
+        'USER': config('DB_USER', default='clone_x'),
+        'PASSWORD': config('DB_PASSWORD', default='Nicolas-157'),
+        'HOST': config('DB_HOST', default='localhost'),
+        'PORT': config('DB_PORT', default='5432'),
+    }
+}
+CONN_MAX_AGE = config('DB_CONN_MAX_AGE', default=60, cast=int)
+# Fallback para SQLite no PythonAnywhere free
+if config('PA_USE_SQLITE', default=False, cast=bool):
+    DATABASES['default'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
+    }
