@@ -1,7 +1,7 @@
 from rest_framework import serializers
+from .models import User, Follow
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
-from .models import User
 
 class UserRegistrationSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, validators=[validate_password])
@@ -54,14 +54,49 @@ class UserLoginSerializer(serializers.Serializer):
             raise serializers.ValidationError('Email/username e senha são obrigatórios.')
 
 class UserProfileSerializer(serializers.ModelSerializer):
+    followers_count = serializers.SerializerMethodField()
+    following_count = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ('id', 'email', 'username', 'first_name', 'last_name', 'profile_picture', 'bio', 'date_joined')
-        read_only_fields = ('id', 'email', 'date_joined')
+        fields = ('id', 'email', 'username', 'first_name', 'last_name', 'profile_picture', 'bio', 'date_joined', 'followers_count', 'following_count')
+        read_only_fields = ('id', 'email', 'date_joined', 'followers_count', 'following_count')
 
     def validate_username(self, value):
         user = self.context['request'].user
         if User.objects.exclude(pk=user.pk).filter(username=value).exists():
             raise serializers.ValidationError('Este nome de usuário já esta em uso.')
         return value
+
+    def get_followers_count(self, obj):
+        return obj.followers.count()
+
+    def get_following_count(self, obj):
+        return obj.following.count()
+
+class UserSerializer(serializers.ModelSerializer):
+    followers_count = serializers.SerializerMethodField()
+    following_count = serializers.SerializerMethodField()
+    followed_by_me = serializers.SerializerMethodField()
+
+    class Meta:
+        model = User
+        fields = (
+            'id', 'email', 'username', 'first_name', 'last_name',
+            'profile_picture', 'bio', 'date_joined',
+            'followers_count', 'following_count', 'followed_by_me'
+        )
+
+    def get_followers_count(self, obj):
+        return obj.followers.count()
+
+    def get_following_count(self, obj):
+        return obj.following.count()
+
+    def get_followed_by_me(self, obj):
+        request = self.context.get('request')
+        user = getattr(request, 'user', None) if request else None
+        if user and user.is_authenticated:
+            return Follow.objects.filter(follower=user, following=obj).exists()
+        return False
 

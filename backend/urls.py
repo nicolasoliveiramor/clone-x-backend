@@ -5,8 +5,8 @@ from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    # Incluindo as URLs do app accounts com prefixo 'api/auth/'
-    path('api/auth/', include('accounts.urls'))
+    path('api/auth/', include('accounts.urls')),
+    path('api/posts/', include('posts.urls')),
 ]
 
 # Configuração para servir arquivos de mídia durante o desenvolvimento

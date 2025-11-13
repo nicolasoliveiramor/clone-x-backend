@@ -1,4 +1,8 @@
 Django>=5.2.6
 djangorestframework>=3.14.0
 django-cors-headers>=4.0.0
-Pillow>=10.0.0 #Para manipulação de imagens (fotos de perfil)
+djangorestframework_simplejwt>=5.5.1
+PyJWT>=2.10.1
+python-decouple>=3.8
+pillow>=10.0.0 #Para manipulação de imagens (fotos de perfil)
+psycopg2-binary>=2.9.6 #Para conexão com o banco de dados PostgreSQL
