@@ -1,5 +1,5 @@
 from pathlib import Path
-from decouple import config, Csv
+from decouple import AutoConfig
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -132,16 +132,13 @@ IDLE_TIMEOUT_SECONDS = 60 * 60
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME', default='clone_x'),
-        'USER': config('DB_USER', default='clone_x'),
-        'PASSWORD': config('DB_PASSWORD', default='Nicolas-157'),
-        'HOST': config('DB_HOST', default='localhost'),
-        'PORT': config('DB_PORT', default='5432'),
-    }
-}
+# Garante que o Decouple procure o .env dentro do projeto
+config = AutoConfig(search_path=BASE_DIR)
+
+# Exemplo de uso (mantém seu restante igual):
+DEBUG = config('DEBUG', default=False, cast=bool)
+SECRET_KEY = config('SECRET_KEY', default='change-me')
+
 CONN_MAX_AGE = config('DB_CONN_MAX_AGE', default=60, cast=int)
 # Fallback para SQLite no PythonAnywhere free
 if config('PA_USE_SQLITE', default=True, cast=bool):
