@@ -15,10 +15,12 @@ DEFAULT_DB_SQLITE = {
     'NAME': BASE_DIR / 'db.sqlite3',
 }
 
-# Banco de dados: force SQLite como padrão
 USE_POSTGRES = config('USE_POSTGRES', default=False, cast=bool)
+PA_USE_SQLITE = config('PA_USE_SQLITE', default=True, cast=bool)
 
-if USE_POSTGRES:
+if PA_USE_SQLITE:
+    DATABASES = {'default': DEFAULT_DB_SQLITE}
+elif USE_POSTGRES:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql',
@@ -33,21 +35,3 @@ else:
     DATABASES = {'default': DEFAULT_DB_SQLITE}
 
 CONN_MAX_AGE = config('DB_CONN_MAX_AGE', default=60, cast=int)
-# Fallback para SQLite no PythonAnywhere free
-if config('PA_USE_SQLITE', default=True, cast=bool):
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
-    }
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': config('DB_NAME', default='clone_x'),
-            'USER': config('DB_USER', default='clone_x'),
-            'PASSWORD': config('DB_PASSWORD', default='Nicolas-157'),
-            'HOST': config('DB_HOST', default='localhost'),
-            'PORT': config('DB_PORT', default='5432'),
-        }
-    }
