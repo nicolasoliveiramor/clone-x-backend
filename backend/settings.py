@@ -13,9 +13,11 @@ SECRET_KEY = config('SECRET_KEY', default='change-me')
 CONN_MAX_AGE = config('DB_CONN_MAX_AGE', default=60, cast=int)
 # Fallback para SQLite no PythonAnywhere free
 if config('PA_USE_SQLITE', default=True, cast=bool):
-    DATABASES['default'] = {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
     }
     DATABASES = {
         'default': {
