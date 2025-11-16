@@ -37,10 +37,12 @@ else:
 CONN_MAX_AGE = config('DB_CONN_MAX_AGE', default=60, cast=int)
 
 PA_HOST = config('PA_HOST', default='')
+ALLOW_PYTHONANYWHERE_WILDCARD = config('ALLOW_PYTHONANYWHERE_WILDCARD', default=False, cast=bool)
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 if PA_HOST:
     ALLOWED_HOSTS.append(PA_HOST)
-ALLOWED_HOSTS += ['.pythonanywhere.com']
+if ALLOW_PYTHONANYWHERE_WILDCARD:
+    ALLOWED_HOSTS += ['.pythonanywhere.com']
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -101,7 +103,8 @@ MEDIA_ROOT = BASE_DIR / 'media'
 CSRF_TRUSTED_ORIGINS = []
 if PA_HOST:
     CSRF_TRUSTED_ORIGINS.append(f"https://{PA_HOST}")
-CSRF_TRUSTED_ORIGINS += ["https://*.pythonanywhere.com"]
+if ALLOW_PYTHONANYWHERE_WILDCARD:
+    CSRF_TRUSTED_ORIGINS += ["https://*.pythonanywhere.com"]
 
 CORS_ALLOW_ALL_ORIGINS = True
 FRONTEND_ORIGIN = config('FRONTEND_ORIGIN', default='')
