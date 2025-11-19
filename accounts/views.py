@@ -9,6 +9,7 @@ from django.contrib.auth.decorators import login_required
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import ensure_csrf_cookie
+from django.middleware.csrf import get_token
 from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserProfileSerializer, UserSerializer
 from .models import User, Follow
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
@@ -72,6 +73,14 @@ class LogoutView(APIView):
         return Response({
             'message': 'Logout realizado com sucesso!'
         }, status=status.HTTP_200_OK)
+
+@method_decorator(ensure_csrf_cookie, name='get')
+class CsrfTokenView(APIView):
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        token = get_token(request)
+        return Response({'csrfToken': token}, status=status.HTTP_200_OK)
 
 @method_decorator(ensure_csrf_cookie, name='get')
 class UserProfileView(APIView):

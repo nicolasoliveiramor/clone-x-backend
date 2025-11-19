@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import RegisterView, LoginView, LogoutView, CheckAuthView, UserProfileView, FollowToggleView, FollowersListView, FollowingListView, UsersListView
+from .views import RegisterView, LoginView, LogoutView, CheckAuthView, UserProfileView, FollowToggleView, FollowersListView, FollowingListView, UsersListView, CsrfTokenView
 
 app_name = 'accounts'
 
@@ -18,6 +18,7 @@ urlpatterns = [
 
     # Rota para verificar se o usuário está autenticado
     path('check-auth/', CheckAuthView.as_view(), name='check_auth'),
+    path('csrf/', CsrfTokenView.as_view(), name='csrf'),
 
     # Rota para seguir/parar de seguir um usuário
     path('follow/<int:user_id>/', FollowToggleView.as_view(), name='follow-toggle'),
