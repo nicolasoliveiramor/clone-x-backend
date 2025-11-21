@@ -10,9 +10,9 @@ from accounts.models import Follow
 class PostViewSet(viewsets.ModelViewSet):
     queryset = Post.objects.select_related('author')\
         .annotate(
-            likes_count=Count('likes'),
-            comments_count=Count('comments'),
-            retweets_count=Count('retweets'),
+            likes_count=Count('likes', distinct=True),
+            comments_count=Count('comments', distinct=True),
+            retweets_count=Count('retweets', distinct=True),
         )\
         .prefetch_related('comments')\
         .order_by('-created_at')
@@ -29,9 +29,9 @@ class PostViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         qs = Post.objects.select_related('author').prefetch_related('comments')
         qs = qs.annotate(
-            likes_count=Count('likes'), 
-            comments_count=Count('comments'),
-            retweets_count=Count('retweets'),
+            likes_count=Count('likes', distinct=True), 
+            comments_count=Count('comments', distinct=True),
+            retweets_count=Count('retweets', distinct=True),
         )
         user = getattr(self, 'request', None).user if hasattr(self, 'request') else None
         if user and user.is_authenticated:
@@ -101,9 +101,9 @@ class PostViewSet(viewsets.ModelViewSet):
         # Feed público: todos os posts, com anotações
         qs = Post.objects.select_related('author').prefetch_related('comments')
         qs = qs.annotate(
-            likes_count=Count('likes'),
-            comments_count=Count('comments'),
-            retweets_count=Count('retweets'),
+            likes_count=Count('likes', distinct=True),
+            comments_count=Count('comments', distinct=True),
+            retweets_count=Count('retweets', distinct=True),
         )
 
         user = request.user
