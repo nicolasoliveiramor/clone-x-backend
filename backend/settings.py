@@ -109,6 +109,7 @@ if ALLOW_PYTHONANYWHERE_WILDCARD:
 CORS_ALLOW_ALL_ORIGINS = True
 FRONTEND_ORIGIN = config('FRONTEND_ORIGIN', default='')
 FRONTEND_ORIGIN_REGEX = config('FRONTEND_ORIGIN_REGEX', default='^https:\/\/.*\.vercel\.app$')
+FRONTEND_DEV_ORIGIN = config('FRONTEND_DEV_ORIGIN', default='')
 if FRONTEND_ORIGIN:
     CORS_ALLOW_ALL_ORIGINS = False
     CORS_ALLOWED_ORIGINS = [FRONTEND_ORIGIN]
@@ -121,9 +122,24 @@ elif FRONTEND_ORIGIN_REGEX:
     if 'vercel.app' in FRONTEND_ORIGIN_REGEX:
         CSRF_TRUSTED_ORIGINS.append('https://*.vercel.app')
 
+# Dev origin (localhost:5173) support when provided
+if FRONTEND_DEV_ORIGIN:
+    CORS_ALLOW_ALL_ORIGINS = False
+    try:
+        CORS_ALLOWED_ORIGINS = list(set((CORS_ALLOWED_ORIGINS if 'CORS_ALLOWED_ORIGINS' in globals() else []) + [FRONTEND_ORIGIN, FRONTEND_DEV_ORIGIN]))
+    except NameError:
+        CORS_ALLOWED_ORIGINS = [FRONTEND_DEV_ORIGIN]
+    CORS_ALLOW_CREDENTIALS = True
+    CSRF_TRUSTED_ORIGINS.append(FRONTEND_DEV_ORIGIN)
+    # include common localhost variants
+    if FRONTEND_DEV_ORIGIN.startswith('http://localhost:5173'):
+        CSRF_TRUSTED_ORIGINS += ['http://127.0.0.1:5173']
+
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SESSION_COOKIE_SAMESITE = 'None'
 CSRF_COOKIE_SAMESITE = 'None'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+IDLE_TIMEOUT_SECONDS = config('IDLE_TIMEOUT_SECONDS', default=1800, cast=int)
+SESSION_COOKIE_AGE = config('SESSION_COOKIE_AGE', default=1800, cast=int)
