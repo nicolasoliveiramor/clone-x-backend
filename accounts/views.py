@@ -10,6 +10,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.middleware.csrf import get_token
+from rest_framework import generics
 from .serializers import UserRegistrationSerializer, UserLoginSerializer, UserProfileSerializer, UserSerializer
 from .models import User, Follow
 from rest_framework.parsers import JSONParser, FormParser, MultiPartParser
@@ -81,6 +82,13 @@ class CsrfTokenView(APIView):
     def get(self, request):
         token = get_token(request)
         return Response({'csrfToken': token}, status=status.HTTP_200_OK)
+
+class UserDetailView(generics.RetrieveAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+    queryset = User.objects.all()
+    lookup_field = 'id'
+    lookup_url_kwarg = 'user_id'
 
 @method_decorator(ensure_csrf_cookie, name='get')
 class UserProfileView(APIView):
