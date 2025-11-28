@@ -100,7 +100,7 @@ class UserSerializer(serializers.ModelSerializer):
             return Follow.objects.filter(follower=user, following=obj).exists()
         return False
 
-class ChangePasswordSerializer(serializers.ModelSerializer):
+class ChangePasswordSerializer(serializers.Serializer):
     current_password = serializers.CharField(write_only=True)
     new_password = serializers.CharField(write_only=True, validators=[validate_password])
     confirm_password = serializers.CharField(write_only=True)
