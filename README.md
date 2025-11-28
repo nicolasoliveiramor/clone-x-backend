@@ -1,4 +1,4 @@
-# Minha Rede - Backend
+# Minha Rede Social - Backend
 
 API em Django REST Framework para um microclonador de posts com curtidas, retweets, comentários e perfis de usuário. Integra com um frontend em React/Vite e suporta autenticação baseada em sessão (cookies), CSRF, CORS e upload de imagens.
 
