@@ -201,7 +201,7 @@ class UsersListView(generics.ListAPIView):
 
 class ChangePasswordView(APIView):
     serializer_class = ChangePasswordSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
         serializer = ChangePasswordSerializer(data=request.data, context={'request': request})
