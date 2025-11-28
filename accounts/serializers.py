@@ -100,3 +100,21 @@ class UserSerializer(serializers.ModelSerializer):
             return Follow.objects.filter(follower=user, following=obj).exists()
         return False
 
+class ChangePasswordSerializer(serializers.ModelSerializer):
+    current_password = serializers.CharField(write_only=True)
+    new_password = serializers.CharField(write_only=True, validators=[validate_password])
+    confirm_password = serializers.CharField(write_only=True)
+
+    def validate(self, attrs):
+        user = self.context['request'].user
+        if not user.check_password(attrs.get('current_password')):
+            raise serializers.ValidationError({'current_password': ['Senha atual inválida.']})
+        if attrs.get('new_password') != attrs.get('confirm_password'):
+            raise serializers.ValidationError({'confirm_password': ['As senhas não coincidem.']})
+        return attrs
+
+    def save(self, **kwargs):
+        user = self.context['request'].user
+        user.set_password(self.validated_data['new_password'])
+        user.save()
+        return user

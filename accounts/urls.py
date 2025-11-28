@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import RegisterView, LoginView, LogoutView, CheckAuthView, UserProfileView, FollowToggleView, FollowersListView, FollowingListView, UsersListView, CsrfTokenView, UserDetailView
+from .views import RegisterView, LoginView, LogoutView, CheckAuthView, UserProfileView, FollowToggleView, FollowersListView, FollowingListView, UsersListView, CsrfTokenView, UserDetailView, ChangePasswordView
 
 app_name = 'accounts'
 
@@ -30,4 +30,7 @@ urlpatterns = [
     path('<int:user_id>/following/', FollowingListView.as_view(), name='following-list'),
     path('users/', UsersListView.as_view(), name='users-list'),
     path('users/<int:user_id>/', UserDetailView.as_view(), name='users-detail'),
+
+    # Rota para alterar a senha do usuário
+    path('change-password/', ChangePasswordView.as_view(), name='change-password'),
 ]
